@@ -9,7 +9,6 @@ void main(void) {
     wiringPiSetup();
 
     pinMode(ledPin, OUTPUT);
-    printf("Using pin\n");
     while(1) {
         digitalWrite(ledPin, HIGH);
         printf("led turned on\n");
