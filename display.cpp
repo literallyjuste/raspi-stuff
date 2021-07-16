@@ -5,10 +5,12 @@
 #include <pcf8574.h>
 #include <lcd.h>
 #include <time.h>
+#include "DHT.hpp"
+#include "DHT.cpp"
 
 int pcf8574_address = 0x27;
 #define BASE 64
-
+#define DHT11_Pin 0
 #define RS BASE+0
 #define RW BASE+1
 #define EN BASE+2
@@ -60,10 +62,39 @@ int detectI2C(int addr) {
     }
 }
 
+void MicroStuff() {
+        printCPUTemperature();
+        printDataTime();
+        delay(1000);
+}
+
+void DHTStuff() {
+    DHT dht;
+    int chk, counts;
+    counts++;
+    printf("Measurement counts : %d \n", counts);
+    for(int i = 0; i<15;i++) {
+        chk = dht.readDHT11(DHT11_Pin);
+        if(chk == DHTLIB_OK) {
+            printf("DHT11,OK!\n");
+            break;
+        }
+        delay(100);
+    }
+    printf("Humidity is %.2f %% \t Temperature is %.2f *C\n\n", dht.humidity, dht.temperature);
+    lcdPosition(lcdhd, 0, 0);
+    lcdPrintf(lcdhd, "Hum:%.2f", dht.humidity);
+    lcdPosition(lcdhd, 0, 1);
+    lcdPrintf(lcdhd, "Temp:%.2f", dht.temperature);
+    delay(2000);
+}
+
 int main(void) {
     int i;
     printf("Program is starting...\n");
+
     wiringPiSetup();
+    
     if(detectI2C(0x27)) {
         pcf8574_address = 0x27;
     } else if(detectI2C(0x3F)) {
@@ -84,9 +115,10 @@ int main(void) {
         return 1;
     }
     while(1) {
-        printCPUTemperature();
-        printDataTime();
-        delay(1000);
+        MicroStuff();
+        delay(20000);
+        DHTStuff();
+        delay(20000);
     }
     return 0;
 }
