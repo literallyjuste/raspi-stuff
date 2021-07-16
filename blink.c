@@ -1,9 +1,10 @@
 #include <wiringPi.h>
 #include <stdio.h>
 
-#define ledPin 0
+#define  ledPin  0
 
-void main(void) {
+void main(void) 
+{
     printf("Program is starting... \n");
 
     wiringPiSetup();
