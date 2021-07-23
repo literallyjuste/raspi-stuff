@@ -26,6 +26,21 @@ void loop() {
     printf("a/g: %.2f g %.2f g %.2f g   %.2f d/s %.2f d/s %.2f d/s \n",(float)ax/16384,(float)ay/16384,(float)az/16384,(float)gx/131,(float)gy/131,(float)gz/131);
 }
 
+void startBuzzer(int pin) {
+    int x; 
+    double sinVal, toneVal;
+    for(x=0;x<360;x++) {
+        sinVal = sin(x * (M_PI / 180));
+        toneVal = 2000 + sinVal * 500;
+        softToneWrite(pin, toneVal);
+        delay(1);
+    }
+}
+
+void stopBuzzer(int pin) {
+    softToneWrite(pin, 0);
+}
+
 int main() {
     setup();
     pinMode(Buzzer, OUTPUT);
